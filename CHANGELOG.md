@@ -70,6 +70,7 @@ This means that druid no longer requires cairo on macOS and uses Core Graphics i
 - `SHOW_WINDOW` and `CLOSE_WINDOW` commands now only use `Target` to determine the affected window. ([#928] by [@finnerale])
 - Replaced `NEW_WINDOW`, `SET_MENU` and `SHOW_CONTEXT_MENU` commands with methods on `EventCtx` and `DelegateCtx`. ([#931] by [@finnerale])
 - Replaced `Command::one_shot` and `::take_object` with a `SingleUse` payload wrapper type. ([#959] by [@finnerale])
+- Add  `set_menu` method to `UpdateCtx` and `LifeCycleCtx` ([#970] by [@cmyr])
 
 ### Deprecated
 
@@ -217,6 +218,7 @@ This means that druid no longer requires cairo on macOS and uses Core Graphics i
 [#961]: https://github.com/xi-editor/druid/pull/961
 [#963]: https://github.com/xi-editor/druid/pull/963
 [#969]: https://github.com/xi-editor/druid/pull/969
+[#970]: https://github.com/xi-editor/druid/pull/970
 
 ## [0.5.0] - 2020-04-01
 
