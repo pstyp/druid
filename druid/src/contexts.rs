@@ -84,10 +84,10 @@ pub struct UpdateCtx<'a, 'b> {
 /// As of now, the main service provided is access to a factory for
 /// creating text layout objects, which are likely to be useful
 /// during widget layout.
-pub struct LayoutCtx<'a, 'b: 'a, 'c> {
-    pub(crate) root_state: &'a mut ContextState<'c>,
+pub struct LayoutCtx<'a, 'b, 'c: 'a> {
+    pub(crate) root_state: &'a mut ContextState<'b>,
     pub(crate) widget_state: &'a mut WidgetState,
-    pub(crate) text_factory: &'a mut Text<'b>,
+    pub(crate) text_factory: &'a mut Text<'c>,
     pub(crate) mouse_pos: Option<Point>,
 }
 
@@ -105,7 +105,7 @@ pub(crate) struct ZOrderPaintOp {
 /// This struct is expected to grow, for example to include the
 /// "damage region" indicating that only a subset of the entire
 /// widget hierarchy needs repainting.
-pub struct PaintCtx<'a, 'b: 'a> {
+pub struct PaintCtx<'a, 'b> {
     /// The render context for actually painting.
     pub render_ctx: &'a mut Piet<'b>,
     pub window_id: WindowId,
@@ -128,7 +128,7 @@ pub struct PaintCtx<'a, 'b: 'a> {
 #[derive(Debug, Clone)]
 pub struct Region(Rect);
 
-impl<'a, 'b> EventCtx<'a, 'b> {
+impl EventCtx<'_, '_> {
     #[deprecated(since = "0.5.0", note = "use request_paint instead")]
     pub fn invalidate(&mut self) {
         self.request_paint();
@@ -454,7 +454,7 @@ impl<'a, 'b> EventCtx<'a, 'b> {
     }
 }
 
-impl<'a, 'b> LifeCycleCtx<'a, 'b> {
+impl LifeCycleCtx<'_, '_> {
     #[deprecated(since = "0.5.0", note = "use request_paint instead")]
     pub fn invalidate(&mut self) {
         self.request_paint();
@@ -688,9 +688,9 @@ impl<'a, 'b> UpdateCtx<'a, 'b> {
     }
 }
 
-impl<'a, 'b, 'c> LayoutCtx<'a, 'b, 'c> {
+impl<'c> LayoutCtx<'_, '_, 'c> {
     /// Get an object which can create text layouts.
-    pub fn text(&mut self) -> &mut Text<'b> {
+    pub fn text(&mut self) -> &mut Text<'c> {
         &mut self.text_factory
     }
 
@@ -715,7 +715,7 @@ impl<'a, 'b, 'c> LayoutCtx<'a, 'b, 'c> {
     }
 }
 
-impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
+impl PaintCtx<'_, '_> {
     /// get the `WidgetId` of the current widget.
     pub fn widget_id(&self) -> WidgetId {
         self.widget_state.id
